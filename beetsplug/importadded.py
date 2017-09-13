@@ -12,6 +12,7 @@ import os
 from beets import util
 from beets import importer
 from beets.plugins import BeetsPlugin
+from beets.util import MoveOperation
 
 
 class ImportAddedPlugin(BeetsPlugin):
@@ -34,9 +35,7 @@ class ImportAddedPlugin(BeetsPlugin):
         register('import_task_start', self.record_if_inplace)
         register('import_task_files', self.record_reimported)
         register('before_item_moved', self.record_import_mtime)
-        register('item_copied', self.record_import_mtime)
-        register('item_linked', self.record_import_mtime)
-        register('item_hardlinked', self.record_import_mtime)
+        register('item_moved', self.record_import_mtime)
         register('album_imported', self.update_album_times)
         register('item_imported', self.update_item_times)
         register('after_write', self.update_after_write_time)
@@ -81,14 +80,20 @@ class ImportAddedPlugin(BeetsPlugin):
         self.write_file_mtime(util.syspath(item.path), mtime)
         item.mtime = mtime
 
-    def record_import_mtime(self, item, source, destination):
+    def record_import_mtime(self, item, source, destination, operation=None):
         """Record the file mtime of an item's path before its import.
         """
-        mtime = os.stat(util.syspath(source)).st_mtime
-        self.item_mtime[destination] = mtime
-        self._log.debug(u"Recorded mtime {0} for item '{1}' imported from "
-                        u"'{2}'", mtime, util.displayable_path(destination),
-                        util.displayable_path(source))
+        if (operation is None
+                or (operation == MoveOperation.COPY
+                    or operation == MoveOperation.LINK
+                    or operation == MoveOperation.HARDLINK)):
+            mtime = os.stat(util.syspath(source)).st_mtime
+            self.item_mtime[destination] = mtime
+            self._log.debug(u"Recorded mtime {0} for item '{1}' imported from "
+                            u"'{2}'",
+                            mtime,
+                            util.displayable_path(destination),
+                            util.displayable_path(source))
 
     def update_album_times(self, lib, album):
         if self.reimported_album(album):

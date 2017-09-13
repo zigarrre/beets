@@ -701,19 +701,19 @@ class Item(LibModel):
                          destination=dest)
             util.move(self.path, dest)
             plugins.send("item_moved", item=self, source=self.path,
-                         destination=dest)
+                         destination=dest, operation=operation)
         elif operation == MoveOperation.COPY:
             util.copy(self.path, dest)
-            plugins.send("item_copied", item=self, source=self.path,
-                         destination=dest)
+            plugins.send("item_moved", item=self, source=self.path,
+                         destination=dest, operation=operation)
         elif operation == MoveOperation.LINK:
             util.link(self.path, dest)
-            plugins.send("item_linked", item=self, source=self.path,
-                         destination=dest)
+            plugins.send("item_moved", item=self, source=self.path,
+                         destination=dest, operation=operation)
         elif operation == MoveOperation.HARDLINK:
             util.hardlink(self.path, dest)
-            plugins.send("item_hardlinked", item=self, source=self.path,
-                         destination=dest)
+            plugins.send("item_moved", item=self, source=self.path,
+                         destination=dest, operation=operation)
 
         # Either copying or moving succeeded, so update the stored path.
         self.path = dest

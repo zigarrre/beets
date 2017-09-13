@@ -53,6 +53,12 @@ For developers:
 * Refactored the move functions in library.py and the `manipulate_files` function
   in importer.py to use a single parameter describing the file operation instead
   of multiple boolean flags. :bug:`2682`
+* :ref:`plugin_events`: The ``item_moved``, ``item_copied``, ``item_linked``
+  and ``item_hardlinked`` events have been merged into a single ``item_moved``
+  event. The actual operation that was carried out is indicated by the new
+  ``operation`` parameter. The official plugins have been updated accordingly
+  but this will break all inofficial plugins that are using any of these
+  events. :bug:`2629`
 
 
 1.4.5 (June 20, 2017)

@@ -144,9 +144,6 @@ The events currently available are:
   command finishes adding an album to the library. Parameters: ``lib``,
   ``album``
 
-* `item_copied`: called with an ``Item`` object whenever its file is copied.
-  Parameters: ``item``, ``source`` path, ``destination`` path
-
 * `item_imported`: called with an ``Item`` object every time the importer adds a
   singleton to the library (not called for full-album imports). Parameters:
   ``lib``, ``item``
@@ -154,16 +151,11 @@ The events currently available are:
 * `before_item_moved`: called with an ``Item`` object immediately before its
   file is moved. Parameters: ``item``, ``source`` path, ``destination`` path
 
-* `item_moved`: called with an ``Item`` object whenever its file is moved.
-  Parameters: ``item``, ``source`` path, ``destination`` path
-
-* `item_linked`: called with an ``Item`` object whenever a symlink is created
-  for a file.
-  Parameters: ``item``, ``source`` path, ``destination`` path
-
-* `item_hardlinked`: called with an ``Item`` object whenever a hardlink is
-  created for a file.
-  Parameters: ``item``, ``source`` path, ``destination`` path
+* `item_moved`: called when the file of an ``Item`` is moved, copied, linked or
+  hardlinked.
+  Parameters: ``item``, ``source`` path, ``destination`` path, ``operation``
+  indicates which file operation was carried out and is an instance of
+  ``beets.util.MoveOperation``
 
 * `item_removed`: called with an ``Item`` object every time an item (singleton
   or album's part) is removed from the library (even when its file is not
